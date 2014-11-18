@@ -27,7 +27,7 @@ post '/log' => sub {
   my @time = localtime;
   my $log = strftime "%Y-%m-%d", @time;
 
-  open my $fh, ">>", "$log.log";
+  open my $fh, ">>", "./data/$log.log";
   print $fh encode_json({
     datetime => strftime("%Y-%m-%dT%H:%M:%S", @time)
     ,headers => $c->req->headers->{headers}
