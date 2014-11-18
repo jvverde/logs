@@ -21,6 +21,7 @@ get '/test' => sub {
 };
 
 $\ = "\n";
+
 post '/log' => sub {
   my $c = shift;
 
@@ -36,6 +37,20 @@ post '/log' => sub {
   close $fh;
   $c->render(json => {res=> 'Ok'});
 };
+
+get '/log/#file/#n' => {
+  n => 1
+  , file => strftime "%Y-%m-%d", localtime
+} => sub{
+  my $c = shift;
+  my $log = $c->param('file');
+  #undef $/;
+  open my $fh, "<", "./data/$log.log";
+  my @lines = <$fh>;
+  my $n = $c->param('n') || 1;
+  $c->render(text => $lines[$n], format => 'json');
+};
+
 app->controller_class('MyLib::Controller');
 app->plugin( 'Mojolicious::Plugin::CORS' );
 app->start;
