@@ -38,17 +38,17 @@ post '/log' => sub {
   $c->render(json => {res=> 'Ok'});
 };
 
-get '/log/#file/#n' => {
-  n => 1
-  , file => strftime "%Y-%m-%d", localtime
+get '/log/:filename/:number' => {
+  number => 0
+  , filename => strftime "%Y-%m-%d", localtime
 } => sub{
   my $c = shift;
-  my $log = $c->param('file');
-  #undef $/;
+  my $log = $c->param('filename');
   open my $fh, "<", "./data/$log.log";
   my @lines = <$fh>;
-  my $n = $c->param('n') || 1;
-  $c->render(text => $lines[$n], format => 'json');
+  close $fh;
+  my $n = $c->param('number') || 0;
+  $c->render(text => ($lines[$n] || '{}'), format => 'json');
 };
 
 app->controller_class('MyLib::Controller');
