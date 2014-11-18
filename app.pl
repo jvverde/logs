@@ -5,6 +5,10 @@ use Data::Dumper;
 use Mojo::JSON qw(decode_json encode_json);
 use POSIX qw(strftime);
 
+options '*' => sub {
+  my $self = shift;
+  $self->respond_to(any => { data => '', status => 200 });
+};
 
 get '/' => sub {
   my $c = shift;
@@ -13,7 +17,7 @@ get '/' => sub {
 
 get '/test' => sub {
   my $c = shift;
-  $c->render(json => {foo => [1, 'test', 3]});
+  $c->render(json => {foo => [1, 'test ols222', 3]});
 };
 
 $\ = "\n";
@@ -33,4 +37,5 @@ post '/log' => sub {
   $c->render(json => {res=> 'Ok'});
 };
 app->controller_class('MyLib::Controller');
+app->plugin( 'Mojolicious::Plugin::CORS' );
 app->start;
